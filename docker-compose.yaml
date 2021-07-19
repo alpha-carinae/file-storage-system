@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./vol:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: project
+      MYSQL_USER: metadata
+      MYSQL_PASSWORD: metadata
+  file-storage-system:
+    image: file-storage-system:latest
+    depends_on:
+      - "mysql"
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/project
+    restart: always
